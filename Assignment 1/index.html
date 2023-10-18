@@ -1,0 +1,168 @@
+<head>
+    <title>Bar Chart</title>
+    <style>
+        .bar {
+            fill: #3498ca;
+        }
+
+        .bar:hover {
+            fill: #2980b9;
+        }
+
+        .axis-label {
+            font-size: 12px;
+        }
+
+        .chart-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        .chart {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="chart-container">
+        <svg 
+        viewBox="0 0 1100 700"
+        width="1100px"
+        height="1000px"
+        id="chart" class="chart"></svg>
+    </div>
+    <script>
+        const data = [
+            { ageGroup: '<15', value: 81 },
+            { ageGroup: '15-19', value: 410 },
+            { ageGroup: '20-24', value: 544 },
+            { ageGroup: '25-29', value: 568 },
+            { ageGroup: '30-34', value: 460 },
+            { ageGroup: '35-39', value: 398 },
+            { ageGroup: '40-44', value: 373 },
+            { ageGroup: '45-49', value: 265 },
+            { ageGroup: '50-54', value: 241 },
+            { ageGroup: '55-59', value: 201 },
+            { ageGroup: '60-64', value: 176 },
+            { ageGroup: '65-69', value: 145 },
+            { ageGroup: '70-74', value: 111 },
+            { ageGroup: '75+', value: 173 }
+        ];
+
+        const svg = document.getElementById('chart');
+        const barWidth = 40;
+        const barGap = 20;
+        const maxValue = Math.max(...data.map(d => d.value));
+
+        const chartHeight = 400;
+
+        const scaleFactor = chartHeight / maxValue;
+
+        const scaleValue = (value) => {
+            return value * scaleFactor; 
+        };
+
+                const verticalLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                verticalLine.setAttribute('x1', 50);
+                verticalLine.setAttribute('y1', 400);
+                verticalLine.setAttribute('x2', 50);
+                verticalLine.setAttribute('y2', -50);
+                verticalLine.setAttribute('stroke', 'black');
+                verticalLine.setAttribute('stroke-width', 2);
+                svg.appendChild(verticalLine);
+
+                const horizontalLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                horizontalLine.setAttribute('x1', 50);
+                horizontalLine.setAttribute('y1', 400);
+                horizontalLine.setAttribute('x2', 950);
+                horizontalLine.setAttribute('y2', 400);
+                horizontalLine.setAttribute('stroke', 'black');
+                horizontalLine.setAttribute('stroke-width', 2);
+                svg.appendChild(horizontalLine);
+
+                const yLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                yLabel.setAttribute('x', 20);
+                yLabel.setAttribute('y', -60);
+                yLabel.setAttribute('class', 'axis-label');
+                yLabel.textContent = 'Number of Suicides 2002-2022';
+                svg.appendChild(yLabel);
+
+                const xLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                xLabel.setAttribute('x', 980);
+                xLabel.setAttribute('y', 400);
+                xLabel.setAttribute('class', 'axis-label');
+                xLabel.setAttribute('text-anchor', 'middle');
+                xLabel.textContent = 'Age Group';
+                svg.appendChild(xLabel);
+
+                data.forEach((d, i) => {
+                    const barHeight = scaleValue(d.value); 
+
+                    const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+                    rect.setAttribute('x', i * (barWidth + barGap) + 50); 
+                    rect.setAttribute('y', 400 - barHeight);
+                    rect.setAttribute('width', barWidth);
+                    rect.setAttribute('height', barHeight);
+                    rect.setAttribute('class', 'bar');
+                    svg.appendChild(rect);
+
+                    const xTick = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                    xTick.setAttribute('x1', i * (barWidth + barGap) + 50 + (barWidth / 2)); 
+                    xTick.setAttribute('y1', 400); 
+                    xTick.setAttribute('x2', i * (barWidth + barGap) + 50 + (barWidth / 2));
+                    xTick.setAttribute('y2', 405);
+                    xTick.setAttribute('stroke', 'black');
+                    xTick.setAttribute('stroke-width', 1);
+                    svg.appendChild(xTick);
+
+
+                    const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                    text.setAttribute('x', i * (barWidth + barGap) + 50 + (barWidth / 2));
+                    text.setAttribute('y', 420); 
+                    text.setAttribute('class', 'axis-label');
+                    text.setAttribute('text-anchor', 'middle');
+                    text.textContent = d.ageGroup;
+                    svg.appendChild(text);
+
+                    const value = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                    value.setAttribute('x', i * (barWidth + barGap) + 50 + (barWidth / 2));
+                    value.setAttribute('y', 400 - barHeight - 10);
+                    value.setAttribute('class', 'axis-label');
+                    value.setAttribute('text-anchor', 'middle');
+                    value.textContent = d.value;
+                    svg.appendChild(value);
+
+                });
+
+                const maxLabelValue = Math.ceil(maxValue / 100) * 100;
+                const numLabels = maxLabelValue / 100;
+
+                const labelSpacing = chartHeight / numLabels;
+
+                for (let i = 0; i <= numLabels; i++) {
+                    const yPos = chartHeight - scaleValue(i * 100); 
+
+                    const labelText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                    labelText.setAttribute('x', 30); 
+                    labelText.setAttribute('y', yPos + 5);
+                    labelText.setAttribute('class', 'axis-label');
+                    labelText.setAttribute('text-anchor', 'end');
+                    labelText.textContent = i * 100; 
+
+                    svg.appendChild(labelText);
+
+                    const tick = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                    tick.setAttribute('x1', 45); 
+                    tick.setAttribute('y1', yPos);
+                    tick.setAttribute('x2', 50); 
+                    tick.setAttribute('y2', yPos);
+                    tick.setAttribute('stroke', 'black');
+                    tick.setAttribute('stroke-width', 1);
+                    svg.appendChild(tick);
+            }
+    </script>
+</body>
