@@ -178,6 +178,7 @@ function getModelViewMatrix() {
     transformationMatrix = multiplyMatrices(transformationMatrix, rotationMatrix_z);
     transformationMatrix = multiplyMatrices(transformationMatrix, translationMatrix);
 
+    console.log(transformationMatrix);
     return transformationMatrix
 }
 
@@ -208,7 +209,7 @@ function getPeriodicMovement(startTime) {
         modelViewMatrix,
         progress
     );
- 
+        
     return animatedMatrix;
  }
  
