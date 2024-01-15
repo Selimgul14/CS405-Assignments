@@ -176,7 +176,7 @@ void main()
 
     // Calculate the specular lighting
     vec3 viewDir = normalize(-vPosition);
-    vec3 reflectDir = reflect(-lightdir, normal);
+    vec3 reflectDir = reflect(lightdir, normal);
     spec = pow(max(dot(viewDir, reflectDir), 0.0), phongExp);
 
 
